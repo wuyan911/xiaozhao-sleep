@@ -27,7 +27,7 @@
             overflow-x: hidden;
         }
 
-        /* 背景星光 */
+        /* 背景星光 - 恢复满血动画 */
         .stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
         .star { position: absolute; background: white; border-radius: 50%; opacity: 0.6; animation: twinkle var(--d) infinite ease-in-out; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.2); } }
@@ -66,29 +66,33 @@
         /* 内容布局 */
         .content { position: relative; z-index: 1; max-width: 450px; margin: 90px auto 40px; padding: 0 20px; }
 
+        /* 学生党声明卡片 */
+        .status-card {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 18px; margin-bottom: 25px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            text-align: center; font-size: 14px; line-height: 1.6;
+        }
+        .status-tag { display: inline-block; background: #a8c0ff; color: white; padding: 2px 10px; border-radius: 20px; font-size: 12px; margin-bottom: 8px; font-weight: 600; }
+
         .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border-radius: 28px; padding: 25px; margin-bottom: 20px;
             border: 1px solid var(--glass-border);
             box-shadow: 0 15px 35px rgba(125, 147, 255, 0.1);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .glass-card:active { transform: scale(0.98); }
+        .glass-card:active { transform: scale(0.96); }
 
-        .product-preview { display: flex; align-items: center; gap: 20px; }
-        .product-img { 
-            width: 75px; height: 75px; background: white; 
-            border-radius: 22px; display: flex; align-items: center; justify-content: center; 
-            font-size: 38px; box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-        }
-        .product-info { flex: 1; }
-        .product-name { font-size: 18px; font-weight: 700; color: #444; margin-bottom: 6px; }
-        .product-price { font-size: 20px; font-weight: 800; color: var(--wd-orange); }
+        .product-preview { display: block; width: 100%; }
+        .product-preview img { width: 100%; border-radius: 18px; margin-bottom: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
 
-        /* 按钮动效升级 */
+        /* 恢复按钮动效：流光闪烁 */
         .btn-action {
-            margin-top: 20px; width: 100%; padding: 16px; 
+            margin-top: 15px; width: 100%; padding: 16px; 
             background: linear-gradient(90deg, #a8c0ff, #7d93ff);
             color: #fff; border-radius: 20px; text-align: center; 
             font-weight: 700; cursor: pointer; border: none;
@@ -99,9 +103,9 @@
             content: ""; position: absolute; top: -50%; left: -100%;
             width: 100%; height: 200%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transform: rotate(30deg); animation: shine 4s infinite;
+            transform: rotate(30deg); animation: shine 3s infinite;
         }
-        @keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+        @keyframes shine { 0% { left: -100%; } 25% { left: 100%; } 100% { left: 100%; } }
 
         .service-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; color: #5d81d3; margin-bottom: 15px; }
         .service-desc { font-size: 14px; color: #747d8c; line-height: 1.8; margin-bottom: 18px; }
@@ -133,7 +137,7 @@
 
     <div id="loader-mask">
         <div class="loader-sheep">🐏</div>
-        <p style="margin-top: 25px; font-size: 15px; color: #a8c0ff; font-weight: 600; letter-spacing: 1px;">小羊正在云端漫步...</p>
+        <p style="margin-top: 25px; font-size: 15px; color: #a8c0ff; font-weight: 600; letter-spacing: 1px;">小Capybara正在努力...</p>
     </div>
 
     <div class="stars-container" id="stars"></div>
@@ -144,42 +148,33 @@
     </header>
 
     <div class="content">
-        <div class="glass-card" onclick="toggleDetail(true)">
-            <div class="product-preview">
-                <div class="product-img">🐏</div>
-                <div class="product-info">
-                    <div class="product-name">心选好物 · 一只小羊</div>
-                    <div class="product-price">¥ 1.00</div>
-                </div>
-            </div>
-            <button class="btn-action">查看细节</button>
+        <div class="status-card">
+            <span class="status-tag">站长公告</span>
+            <p>👋 宝，我是学生党，消息无法秒回请见谅~</p>
+            <p><b>✨ 本店商品当天发货，最迟明天准时发出！</b> ✨</p>
         </div>
 
-<div class="glass-card">
-    <div class="service-title">
-        <span>👜</span> 家族工厂 · 质感包袋
-    </div>
-    <div style="display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;">
-        <div style="min-width: 100px; height: 100px; background: #fff; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 40px;">🎒</div>
-        <div style="min-width: 100px; height: 100px; background: #fff; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 40px;">👜</div>
-        <div style="min-width: 100px; height: 100px; background: #fff; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 40px;">🛍️</div>
-    </div>
-    <p class="service-desc">
-        源头工厂直发，17 岁站长的家族底气。我们不卖昂贵的品牌溢价，只卖实打实的好料子。
-    </p>
-    <div class="tag-group">
-        <span class="tag">工厂直销</span>
-        <span class="tag">学生价</span>
-        <span class="tag">顺丰包邮</span>
-    </div>
-    <button class="btn-action" style="background: linear-gradient(90deg, #a8c0ff, #3f2b96);" onclick="window.location.href='这里替换成链接'">直接去店里逛逛 ➔</button>
-</div>
+        <div class="glass-card" onclick="goShop()">
+            <div class="product-preview">
+                <img src="qingming.png" alt="清明上河图先导图">
+                <div class="service-title"><span>🖼️</span> 穿越名作 · 猫戏古都</div>
+                <p class="service-desc">穿越北宋汴京，与Q萌猫咪同逛3D市井！一把镊子，复活汴京风云。</p>
+            </div>
+            <button class="btn-action">前往微店带走它</button>
+        </div>
+
+        <div class="glass-card" onclick="goShop()">
+            <div class="product-preview">
+                <img src="honglou.png" alt="红楼一梦先导图">
+                <div class="service-title"><span>🌸</span> 红楼一梦 · 猫语怡红</div>
+                <p class="service-desc">漫步猫咪大观园，重现心中那段红楼情缘。PET白墨，质感无敌。</p>
+            </div>
+            <button class="btn-action">查看造景细节</button>
+        </div>
 
         <div class="glass-card">
             <div class="service-title"><span>💻</span> 代码治愈所 · 修缮服务</div>
-            <p class="service-desc">
-                网页样式不满意？功能有小 Bug？我可以帮你修改 HTML/CSS/JS，让你的页面也像这样丝滑、治愈。
-            </p>
+            <p class="service-desc">网页样式不满意？功能有小 Bug？我可以帮你修改 HTML/CSS/JS。</p>
             <div class="tag-group">
                 <span class="tag">UI/UX调优</span><span class="tag">响应式适配</span><span class="tag">动效定制</span>
             </div>
@@ -191,20 +186,6 @@
         </div>
     </div>
 
-    <div id="detail-overlay" class="overlay">
-        <div class="back-btn" onclick="toggleDetail(false)">✕</div>
-        <div style="text-align: center;">
-            <div style="width: 120px; height: 120px; background: white; border-radius: 40px; display: flex; align-items: center; justify-content: center; font-size: 70px; margin: 0 auto 30px; box-shadow: 0 20px 45px rgba(0,0,0,0.06);">🐏</div>
-            <h2 style="font-size: 24px; color: #444;">心选好物 · 一只小羊</h2>
-            <div class="product-price" style="font-size: 28px; margin: 20px 0;">¥ 1.00</div>
-            <p style="color: #889495; line-height: 1.8; margin-bottom: 45px; padding: 0 10px;">
-                这是一只非常有质感的小羊，它会静静地陪着你。没有复杂的代码，只有最纯粹的陪伴。
-            </p>
-            <button class="btn-action" onclick="goShop()">前往微店带走它</button>
-            <p style="margin-top: 15px; font-size: 12px; color: #a8c0ff;">支持微信/支付宝安全交易</p>
-        </div>
-    </div>
-
     <div id="contact-overlay" class="overlay">
         <div class="back-btn" onclick="toggleContact(false)">✕</div>
         <div class="contact-box">
@@ -212,14 +193,14 @@
             <h3 style="color: #5d81d3; font-size: 20px;">欢迎咨询</h3>
             <div class="wechat-id">ZZY123837</div>
             <p style="font-size: 14px; color: #747d8c; line-height: 1.8;">
-                不管是前端修改、代码调试，<br>还是想要定制 UI 设计，<br>长按上方 ID 复制，添加微信详谈喔！✨
+                长按上方 ID 复制，添加微信详谈喔！✨
             </p>
             <div class="btn-action" style="margin-top: 35px;" onclick="toggleContact(false)">好哒，这就去</div>
         </div>
     </div>
 
     <script>
-        // 1. 生成星光背景
+        // 1. 生成星光背景 (保持原版顺滑度)
         const starsContainer = document.getElementById('stars');
         const starCount = window.innerWidth < 500 ? 15 : 25;
         for (let i = 0; i < starCount; i++) {
@@ -233,7 +214,7 @@
             starsContainer.appendChild(star);
         }
 
-        // 2. 微店跳转逻辑
+        // 2. 微店跳转链接
         function goShop() {
             window.location.href = "https://www.91ruyu.com/m/koubei/personal.html?userId=1929644151&share_relation=d3a2f3d778ff48ee_1929644151_1&wfr=BuyercopyURL";
         }
