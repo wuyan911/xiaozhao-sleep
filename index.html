@@ -199,8 +199,8 @@
         </div>
     </div>
 
-    <script>
-        // 1. 生成星光背景 (保持原版顺滑度)
+<script>
+        // 1. 生成星光背景
         const starsContainer = document.getElementById('stars');
         const starCount = window.innerWidth < 500 ? 15 : 25;
         for (let i = 0; i < starCount; i++) {
@@ -219,19 +219,24 @@
             window.location.href = "https://www.91ruyu.com/m/koubei/personal.html?userId=1929644151&share_relation=d3a2f3d778ff48ee_1929644151_1&wfr=BuyercopyURL";
         }
 
-        // 3. 动画控制
-        window.addEventListener('load', () => {
+        // 3. 核心修复：动画控制（增加双重保障）
+        function hideLoader() {
             const loader = document.getElementById('loader-mask');
             const runner = document.getElementById('sheep-runner');
-            setTimeout(() => {
+            if (loader && !loader.classList.contains('hidden')) {
                 loader.classList.add('hidden');
-                setTimeout(() => { runner.classList.add('active'); }, 600);
-            }, 1800);
+                if (runner) runner.classList.add('active');
+            }
+        }
+
+        // 保障一：网页加载完就开门
+        window.addEventListener('load', () => {
+            setTimeout(hideLoader, 500); // 稍微延迟一点点让过渡更丝滑
         });
 
+        // 保障二：如果3秒还没加载完，强制开门（防止小羊一直跳）
+        setTimeout(hideLoader, 3000);
+
         // 4. 交互函数
-        function toggleDetail(s) { document.getElementById('detail-overlay').classList.toggle('active', s); }
         function toggleContact(s) { document.getElementById('contact-overlay').classList.toggle('active', s); }
-    </script>
-</body>
-</html>
+</script>
