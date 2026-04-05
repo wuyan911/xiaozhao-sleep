@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小羊的数智口袋 · 极速代码修缮 🐑</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #fceaf0 0%, #e8f0ff 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-main: #57606f;
+            --accent-pink: #ffafbd;
+            --accent-blue: #a8c0ff;
+            --primary-color: #7d93ff;
+            --wd-orange: #ff8e91;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, "PingFang SC", "SF Pro Text", sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景星光 */
+        .stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0.6; animation: twinkle var(--d) infinite ease-in-out; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.2); } }
+
+        /* 开屏动画 */
+        #loader-mask {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #loader-mask.hidden { opacity: 0; pointer-events: none; }
+        .loader-sheep { font-size: 45px; animation: loaderJump 0.6s infinite alternate; }
+        @keyframes loaderJump { from { transform: translateY(0); } to { transform: translateY(-20px); } }
+
+        /* 顶部导航 & 小羊跑动 */
+        .glass-header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 65px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 999; border-bottom: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .header-sheep-runner {
+            position: absolute; left: -60px; font-size: 24px;
+            animation: loopRun 8s linear infinite;
+            display: none;
+        }
+        .header-sheep-runner.active { display: block; }
+        @keyframes loopRun {
+            0% { left: -60px; transform: scaleX(1); }
+            100% { left: 110%; transform: scaleX(1); }
+        }
+        .header-title { font-size: 16px; font-weight: 700; color: #7d93ff; letter-spacing: 2px; }
+
+        /* 内容布局 */
+        .content { position: relative; z-index: 1; max-width: 450px; margin: 90px auto 40px; padding: 0 20px; }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 28px; padding: 25px; margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(125, 147, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:active { transform: scale(0.98); }
+
+        .product-preview { display: flex; align-items: center; gap: 20px; }
+        .product-img { 
+            width: 75px; height: 75px; background: white; 
+            border-radius: 22px; display: flex; align-items: center; justify-content: center; 
+            font-size: 38px; box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .product-info { flex: 1; }
+        .product-name { font-size: 18px; font-weight: 700; color: #444; margin-bottom: 6px; }
+        .product-price { font-size: 20px; font-weight: 800; color: var(--wd-orange); }
+
+        /* 按钮动效升级 */
+        .btn-action {
+            margin-top: 20px; width: 100%; padding: 16px; 
+            background: linear-gradient(90deg, #a8c0ff, #7d93ff);
+            color: #fff; border-radius: 20px; text-align: center; 
+            font-weight: 700; cursor: pointer; border: none;
+            box-shadow: 0 10px 25px rgba(125, 147, 255, 0.3);
+            position: relative; overflow: hidden;
+        }
+        .btn-action::after {
+            content: ""; position: absolute; top: -50%; left: -100%;
+            width: 100%; height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: rotate(30deg); animation: shine 4s infinite;
+        }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+
+        .service-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; color: #5d81d3; margin-bottom: 15px; }
+        .service-desc { font-size: 14px; color: #747d8c; line-height: 1.8; margin-bottom: 18px; }
+        .tag-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { padding: 6px 14px; background: rgba(255,255,255,0.6); border-radius: 12px; font-size: 12px; color: #7d93ff; border: 1px solid var(--glass-border); }
+
+        /* 弹出层 */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            z-index: 20000; display: none; flex-direction: column; padding: 40px 24px;
+        }
+        .overlay.active { display: flex; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .back-btn { font-size: 32px; color: var(--primary-color); margin-bottom: 25px; cursor: pointer; width: fit-content; }
+        
+        .contact-box {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 35px; padding: 35px 25px; text-align: center; margin-top: 10vh;
+            box-shadow: 0 25px 60px rgba(125, 147, 255, 0.2);
+        }
+        .wechat-id {
+            font-size: 30px; font-weight: 900; color: #7d93ff; margin: 20px 0; letter-spacing: 1.5px;
+            background: linear-gradient(90deg, #7d93ff, #ffafbd); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader-mask">
+        <div class="loader-sheep">🐏</div>
+        <p style="margin-top: 25px; font-size: 15px; color: #a8c0ff; font-weight: 600; letter-spacing: 1px;">小羊正在云端漫步...</p>
+    </div>
+
+    <div class="stars-container" id="stars"></div>
+
+    <header class="glass-header">
+        <div class="header-sheep-runner" id="sheep-runner">🐏</div>
+        <div class="header-title">MIEMIE STUDIO</div>
+    </header>
+
+    <div class="content">
+        <div class="glass-card" onclick="toggleDetail(true)">
+            <div class="product-preview">
+                <div class="product-img">🐏</div>
+                <div class="product-info">
+                    <div class="product-name">心选好物 · 一只小羊</div>
+                    <div class="product-price">¥ 1.00</div>
+                </div>
+            </div>
+            <button class="btn-action">查看细节</button>
+        </div>
+
+<div class="glass-card">
+    <div class="service-title">
+        <span>👜</span> 家族工厂 · 质感包袋
+    </div>
+    <div style="display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;">
+        <div style="min-width: 100px; height: 100px; background: #fff; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 40px;">🎒</div>
+        <div style="min-width: 100px; height: 100px; background: #fff; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 40px;">👜</div>
+        <div style="min-width: 100px; height: 100px; background: #fff; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 40px;">🛍️</div>
+    </div>
+    <p class="service-desc">
+        源头工厂直发，17 岁站长的家族底气。我们不卖昂贵的品牌溢价，只卖实打实的好料子。
+    </p>
+    <div class="tag-group">
+        <span class="tag">工厂直销</span>
+        <span class="tag">学生价</span>
+        <span class="tag">顺丰包邮</span>
+    </div>
+    <button class="btn-action" style="background: linear-gradient(90deg, #a8c0ff, #3f2b96);" onclick="window.location.href='这里替换成链接'">直接去店里逛逛 ➔</button>
+</div>
+
+        <div class="glass-card">
+            <div class="service-title"><span>💻</span> 代码治愈所 · 修缮服务</div>
+            <p class="service-desc">
+                网页样式不满意？功能有小 Bug？我可以帮你修改 HTML/CSS/JS，让你的页面也像这样丝滑、治愈。
+            </p>
+            <div class="tag-group">
+                <span class="tag">UI/UX调优</span><span class="tag">响应式适配</span><span class="tag">动效定制</span>
+            </div>
+            <div class="btn-action" style="background: linear-gradient(90deg, #ffd1ff, #fbc2eb); color: #8e44ad;" onclick="toggleContact(true)">立即咨询主人</div>
+        </div>
+
+        <div style="text-align: center; opacity: 0.6; font-size: 13px; margin-top: 40px; color: #7d93ff;">
+            ✨ 让每一行代码都带有温度 ✨
+        </div>
+    </div>
+
+    <div id="detail-overlay" class="overlay">
+        <div class="back-btn" onclick="toggleDetail(false)">✕</div>
+        <div style="text-align: center;">
+            <div style="width: 120px; height: 120px; background: white; border-radius: 40px; display: flex; align-items: center; justify-content: center; font-size: 70px; margin: 0 auto 30px; box-shadow: 0 20px 45px rgba(0,0,0,0.06);">🐏</div>
+            <h2 style="font-size: 24px; color: #444;">心选好物 · 一只小羊</h2>
+            <div class="product-price" style="font-size: 28px; margin: 20px 0;">¥ 1.00</div>
+            <p style="color: #889495; line-height: 1.8; margin-bottom: 45px; padding: 0 10px;">
+                这是一只非常有质感的小羊，它会静静地陪着你。没有复杂的代码，只有最纯粹的陪伴。
+            </p>
+            <button class="btn-action" onclick="goShop()">前往微店带走它</button>
+            <p style="margin-top: 15px; font-size: 12px; color: #a8c0ff;">支持微信/支付宝安全交易</p>
+        </div>
+    </div>
+
+    <div id="contact-overlay" class="overlay">
+        <div class="back-btn" onclick="toggleContact(false)">✕</div>
+        <div class="contact-box">
+            <div style="font-size: 45px; margin-bottom: 15px;">💌</div>
+            <h3 style="color: #5d81d3; font-size: 20px;">欢迎咨询</h3>
+            <div class="wechat-id">ZZY123837</div>
+            <p style="font-size: 14px; color: #747d8c; line-height: 1.8;">
+                不管是前端修改、代码调试，<br>还是想要定制 UI 设计，<br>长按上方 ID 复制，添加微信详谈喔！✨
+            </p>
+            <div class="btn-action" style="margin-top: 35px;" onclick="toggleContact(false)">好哒，这就去</div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 生成星光背景
+        const starsContainer = document.getElementById('stars');
+        const starCount = window.innerWidth < 500 ? 15 : 25;
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 4 + 2;
+            star.style.width = star.style.height = size + 'px';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.setProperty('--d', Math.random() * 3 + 2 + 's');
+            starsContainer.appendChild(star);
+        }
+
+        // 2. 微店跳转逻辑
+        function goShop() {
+            window.location.href = "https://www.91ruyu.com/m/koubei/personal.html?userId=1929644151&share_relation=d3a2f3d778ff48ee_1929644151_1&wfr=BuyercopyURL";
+        }
+
+        // 3. 动画控制
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader-mask');
+            const runner = document.getElementById('sheep-runner');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                setTimeout(() => { runner.classList.add('active'); }, 600);
+            }, 1800);
+        });
+
+        // 4. 交互函数
+        function toggleDetail(s) { document.getElementById('detail-overlay').classList.toggle('active', s); }
+        function toggleContact(s) { document.getElementById('contact-overlay').classList.toggle('active', s); }
+    </script>
+</body>
+</html>
